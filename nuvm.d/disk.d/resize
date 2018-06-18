@@ -1,0 +1,45 @@
+#!/bin/bash
+
+hostname="$1"
+disk_size="$2"
+
+if [[ -z $hostname ]] || [[ -z $disk_size ]];then
+  echo "Usage:"
+  echo "nuvm disk resize hostname size"
+  exit 1
+fi
+
+disk_size=$(( $disk_size * 1024 ))
+vdi_image="$nuvm_path/vms/$hostname/$hostname.vdi" 
+
+function resize(){
+  echo "Stoping VM $hostname"
+  nuvm vm stop $hostname
+
+  echo "Loading Kernel nbd mode"
+  sudo modprobe nbd
+
+  echo "Resize Disk"
+  VBoxManage modifyhd $vdi_image --resize $disk_size
+  sleep 1
+
+  echo "Mounting VDI image"
+  sudo qemu-nbd -c /dev/nbd1 $vdi_image
+  sleep 1
+
+  echo "Recreating Partition"
+  sudo fdisk /dev/nbd1 <<EEOF
+d 1
+n
+p
+1
+
+n
+w
+EEOF
+
+  echo "Umounting VDI"
+  sudo qemu-nbd -d /dev/nbd1
+}
+
+resize

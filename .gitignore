@@ -1,0 +1,6 @@
+cloud-init/*
+!cloud-init/default
+vms/*
+images/*
+!vms/.gitkeep
+!images/.gitkeep

@@ -1,0 +1,86 @@
+#cloud-config
+
+# Hostname management
+preserve_hostname: False
+hostname: HOSTNAME
+fqdn: HOSTNAME.DOMAIN
+
+# Instal packages
+package_update: true
+packages:
+  - unzip
+  - curl
+  - openvpn
+
+# Configure where output will go
+output:
+  all: ">> /var/log/cloud-init.log"
+
+# configure interaction with ssh server
+ssh_svcname: ssh
+ssh_deletekeys: True
+ssh_genkeytypes: ['rsa', 'ecdsa', 'ed25519']
+
+users:
+  - default
+  - name: nuvm
+    gecos: nuvm
+    primary-group: nuvm
+    groups: users
+    ssh-import-id: nuvm
+    lock-passwd: false
+    passwd: $1$SaltSalt$YhgRYajLPrYevs14poKBQ0
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
+    ssh_authorized_keys:
+        - SSH-KEY
+
+growpart:
+  mode: auto
+  devices: ['/']
+  ignore_growroot_disabled: false
+
+write_files:
+-   path: /opt/pia.sh
+    owner: root:root
+    permission: '0777'
+    content: |
+      #!/bin/bash
+
+      function configure_account(){
+        mkdir -p /etc/private-internet-access
+        cat > /etc/private-internet-access/login.conf <<EOF
+      USERNAME
+      PASSWORD
+      EOF
+        chmod 0600 /etc/private-internet-access/login.conf
+        chown root:root /etc/private-internet-access/login.conf
+      }
+
+      function configure_locations(){
+          curl -o /tmp/openvpn.zip https://www.privateinternetaccess.com/openvpn/openvpn.zip
+            unzip /tmp/openvpn.zip -d /etc/openvpn/client
+          rm /tmp/openvpn.zip
+      }
+
+      function start_openvpn(){
+        configure_account
+        configure_locations
+        cd /etc/openvpn/client
+        sed -i 's/auth-user-pass/auth-user-pass \/etc\/private-internet-access\/login.conf/g' Brazil.ovpn
+        openvpn Brazil.ovpn &
+      }
+      start_openvpn
+
+runcmd:
+  - [ ifdown, eth0 ]
+  - [ ifup, eth0 ]
+  - [ bash, /opt/pia.sh ]
+
+manage_resolv_conf: true
+
+resolv_conf:
+  nameservers: ['84.200.69.80', '84.200.70.40']
+  options:
+    rotate: true
+    timeout: 1

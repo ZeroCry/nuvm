@@ -2,5 +2,6 @@
   "debian-9": "http://cdimage.debian.org/cdimage/openstack/current-9/debian-9-openstack-amd64.raw",
   "debian-8": "http://cdimage.debian.org/cdimage/openstack/current-8/debian-8-openstack-amd64.raw",
   "centos-7": "http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2",
+  "fedora": "https://muug.ca/mirror/fedora/linux/releases/28/Cloud/x86_64/images/Fedora-Cloud-Base-28-1.1.x86_64.qcow2",
   "ubuntu-xenial" : "http://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img"
 }

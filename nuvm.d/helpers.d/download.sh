@@ -14,13 +14,13 @@ function get_image(){
 }
 
 function convert(){
+  echo "Converting image"
   vm_path=$nuvm_path/vms/$hostname
   mkdir -p $vm_path
   cp $nuvm_path/images/$image_name.raw $vm_path/$hostname.raw
   raw_image=$vm_path/$hostname.raw
   vdi_image=$vm_path/$hostname.vdi
   qemu-img convert -O vdi $raw_image $vdi_image
-  #VBoxManage convertdd $raw_image $vdi_image --format VDI
   rm $raw_image
 }
 

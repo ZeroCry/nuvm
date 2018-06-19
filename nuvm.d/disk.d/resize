@@ -21,25 +21,24 @@ function resize(){
 
   echo "Resize Disk"
   VBoxManage modifyhd $vdi_image --resize $disk_size
-  sleep 1
 
   echo "Mounting VDI image"
-  sudo qemu-nbd -c /dev/nbd1 $vdi_image
-  sleep 1
+  sudo qemu-nbd -c /dev/nbd0 $vdi_image
 
   echo "Recreating Partition"
-  sudo fdisk /dev/nbd1 <<EEOF
+  sudo fdisk /dev/nbd0 <<EEOF
 d 1
 n
 p
 1
 
+
 n
 w
 EEOF
 
-  echo "Umounting VDI"
-  sudo qemu-nbd -d /dev/nbd1
+echo "Umounting VDI"
+sudo qemu-nbd -d /dev/nbd0
 }
 
 resize

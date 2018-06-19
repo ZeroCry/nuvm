@@ -33,7 +33,8 @@ function create_vm(){
   VBoxManage createvm --name "$hostname" --ostype "$ostype" --register
   VBoxManage modifyvm $hostname --memory $memory --cpus $cpus --ioapic on 
   VBoxManage modifyvm $hostname --mouse usbtablet
-  VBoxManage modifyvm $hostname --natpf1 "guestssh,tcp,,$port,,22"
+  VBoxManage modifyvm $hostname --natpf1 "ssh,tcp,,$port,,22"
+  vboxmanage modifyvm $hostname --uart1 0x3F8 4 # It only exists to run Ubuntu (https://bugs.launchpad.net/cloud-images/+bug/1573095)
   VBoxManage storagectl $hostname --name "SATA Controller" --add sata --portcount 1
   VBoxManage storagectl $hostname --name "IDE Controller" --add ide --controller PIIX4
   VBoxManage storageattach $hostname --storagectl "SATA Controller" --port 0 --device 0 --type hdd  --medium $vdi_image

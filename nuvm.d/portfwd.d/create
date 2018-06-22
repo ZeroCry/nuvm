@@ -1,0 +1,53 @@
+#!/bin/bash 
+
+set -u
+
+function usage(){
+  echo "Usage"
+  echo "-H | vm hostname"
+  echo "-n | Rule name"
+  echo "-l | host port"
+  echo "-v | guest port to bind on host port"
+  echo "-p | protocol, default tcp"
+}
+
+function create_portfwd(){
+  vboxmanage modifyvm "$hostname" --natpf1 "$name,$proto,,$local_port,,$vm_port"  
+}
+echo $#
+if [[ $# -eq 0 ]];then
+  usage
+  exit 1
+fi
+
+proto="tcp"
+
+while getopts 'H:n:l:v:p:h' opt; do
+ case "$opt" in
+  H)
+    hostname="$OPTARG"
+    ;;
+  n)
+    name="$OPTARG"
+    ;;
+  l)
+    local_port="$OPTARG"
+    ;;
+  v)
+    vm_port="$OPTARG"
+    ;;
+  p)
+    proto="$OPTARG"
+    ;;
+  h)
+    usage
+    exit
+    ;;
+  ?)
+    usage
+    exit 1
+    ;;
+  esac
+done
+
+create_portfwd

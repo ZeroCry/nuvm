@@ -1,0 +1,9 @@
+#!/bin/bash
+
+hostname="$1"
+if [[ -z $hostname ]];then
+  echo "nuvm portfwd list vm-hostname-goes-here"
+  exit 1
+fi
+
+nuvm vm inspect $hostname | grep -i forwarding | cut -d "=" -f 2 | tr -d "\"" | awk -F, '{print $1,$2,$4,$6}' | column --table -N Name,Protocol,"Guest Port","Host Port"

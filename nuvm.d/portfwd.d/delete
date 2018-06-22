@@ -1,0 +1,10 @@
+#!/bin/bash
+
+hostname="$1"
+rule_name="$2"
+if [[ -z $hostname ]];then
+  echo "nuvm portfwd delete vm-hostname-goes-here portfwd-name-goes-here"
+  exit 1
+fi
+
+VBoxManage modifyvm "$hostname" --natpf1 delete "$rule_name"

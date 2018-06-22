@@ -27,6 +27,10 @@ list
 |--images               List images availables
 |--runningvms           List running VM's
 |--vms                  List all your VM's
+portfwd
+|--list                 List port forwarding of a specifc vm
+|--create               Create a port forwarding for a specfic vm
+|--delete               Delete a port forwarding of a specfic vm
 vm
 |--stop                 Stop a VM 
 |--create               Create a VM

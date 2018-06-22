@@ -29,7 +29,6 @@ users:
     groups: users
     ssh-import-id: nuvm
     lock-passwd: false
-    passwd: $1$SaltSalt$YhgRYajLPrYevs14poKBQ0
     sudo: ALL=(ALL) NOPASSWD:ALL
     shell: /bin/bash
     ssh_authorized_keys:
@@ -46,7 +45,9 @@ write_files:
     permission: '0777'
     content: |
       #!/bin/bash
-
+      function set_dns(){
+        echo -e 'nameserver 84.200.69.80\nnameserver 84.200.70.40' > /etc/resolv.conf
+      }
       function configure_account(){
         mkdir -p /etc/private-internet-access
         cat > /etc/private-internet-access/login.conf <<EOF
@@ -58,9 +59,9 @@ write_files:
       }
 
       function configure_locations(){
-          curl -o /tmp/openvpn.zip https://www.privateinternetaccess.com/openvpn/openvpn.zip
-            unzip /tmp/openvpn.zip -d /etc/openvpn/client
-          rm /tmp/openvpn.zip
+        curl -o /tmp/openvpn.zip https://www.privateinternetaccess.com/openvpn/openvpn.zip
+        unzip -o /tmp/openvpn.zip -d /etc/openvpn/client
+        rm /tmp/openvpn.zip
       }
 
       function start_openvpn(){
@@ -70,17 +71,10 @@ write_files:
         sed -i 's/auth-user-pass/auth-user-pass \/etc\/private-internet-access\/login.conf/g' Brazil.ovpn
         openvpn Brazil.ovpn &
       }
+      set_dns
       start_openvpn
 
 runcmd:
   - [ ifdown, eth0 ]
   - [ ifup, eth0 ]
   - [ bash, /opt/pia.sh ]
-
-manage_resolv_conf: true
-
-resolv_conf:
-  nameservers: ['84.200.69.80', '84.200.70.40']
-  options:
-    rotate: true
-    timeout: 1

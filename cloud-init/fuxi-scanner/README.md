@@ -1,14 +1,15 @@
-# Private Internet Access - Cloud Init
+# Fuxi Scanner
 
-To use this cloud-init, edit the file user-data and change the strings USERNAME and PASSWORD, with your PIA credentials.
-
-To get ssh access to the vm, change th SSH-KEY to your ssh key.
+To use this cloud-init, edit the file user-data and change the string SSH-KEY to your public ssh key.
 
 Example:
 
 ```bash 
-nuvm vm create -o Debian_64 -i debian-9 -H vpn -p 2222 -C private-internet-access -d 10 -m 2048
+nuvm vm create -o Ubuntu_64 -i ubuntu-xenial -H fuxi_scanner -p 2222 -C fuxi-scanner -d 10 -m 2048
 ```
 
-This command will create a Debian vm with the hostname vpn, 10Gb of disk, 2Gb of memory and when the vm starts, it'll be connected on PIA.
+This command will create a Ubuntu vm with the hostname fuxi_scanner, 10Gb of disk, 2Gb of memory and after the vm start, it create a new port forward rule, to get access to the web interface, the installation proccess may take a while about 5 minutes, depending on your internet connection, after all you can accesse the web interface on,
+
+http://127.0.0.1:5000
+password: whoami
 

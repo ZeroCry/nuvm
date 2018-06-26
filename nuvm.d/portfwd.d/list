@@ -1,9 +1,29 @@
 #!/bin/bash
 
-hostname="$1"
-if [[ -z $hostname ]];then
+hostname="$@"
+
+function specifc_vm(){
+  echo "$hostname forwarded ports"
+  nuvm vm inspect "$hostname" | grep -i forwarding | cut -d "=" -f 2 | tr -d "\"" | awk -F, '{print $1,$2,$4,$6}' | column --table -N Name,Protocol,"Guest Port","Host Port"
+  echo
+}
+
+function all_vms(){
+  nuvm list vms | cut -d ' ' -f2- | while read -r vm;do 
+    nuvm portfwd list "$vm"
+  done
+}
+
+if [[ -z "$hostname" ]];then
   echo "nuvm portfwd list vm-hostname-goes-here"
-  exit 1
+  read -p "No vm was provided, list all vms port forwards?[Y/n]"
+  echo
+  if [[ $REPLY =~ ^[Nn]$ ]];then
+    exit 1
+  else
+    all_vms
+  fi
+else
+  specifc_vm
 fi
 
-nuvm vm inspect $hostname | grep -i forwarding | cut -d "=" -f 2 | tr -d "\"" | awk -F, '{print $1,$2,$4,$6}' | column --table -N Name,Protocol,"Guest Port","Host Port"

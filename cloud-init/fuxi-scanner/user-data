@@ -1,0 +1,83 @@
+#cloud-config
+
+# Hostname management
+preserve_hostname: False
+hostname: HOSTNAME
+fqdn: HOSTNAME.DOMAIN
+
+# Instal packages
+package_update: true
+packages:
+  - curl
+  - python
+  - python-dev
+  - python-pip
+  - python-setuptools
+  - nmap
+  - hydra
+
+# Configure where output will go
+output:
+  all: ">> /var/log/cloud-init.log"
+
+# configure interaction with ssh server
+ssh_svcname: ssh
+ssh_deletekeys: True
+ssh_genkeytypes: ['rsa', 'ecdsa', 'ed25519']
+
+users:
+  - default
+  - name: nuvm
+    gecos: nuvm
+    primary-group: nuvm
+    groups: users
+    ssh-import-id: nuvm
+    lock-passwd: false
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
+    ssh_authorized_keys:
+        - SSH-KEY
+
+growpart:
+  mode: auto
+  devices: ['/']
+  ignore_growroot_disabled: false
+
+write_files:
+-   path: /opt/install.sh
+    owner: root:root
+    permission: '0777'
+    content: |
+      #!/bin/bash
+      echo 0 > /tmp/done
+      FUXI_HOME="/opt/fuxi-scanner"
+      git clone --depth 1 https://github.com/jeffzh3ng/Fuxi-Scanner.git "$FUXI_HOME"
+      cd "$FUXI_HOME"
+      python -m pip install pip==9.0.3
+      pip install -r requirements.txt
+      apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5
+      echo "deb https://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.6 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-3.6.list
+      apt-get update
+      apt-get install -y mongodb-org
+      service mongod start
+      sleep 3
+      mongo <<EOF
+      use admin
+      db.createUser({user: "admin",pwd: "14b3xfY1wd",roles: [ { role: "userAdminAnyDatabase", db: "admin" } ]})
+      EOF
+      mongo <<EOF
+      use fuxi
+      db.createUser({user: "fuxi_scanner",pwd: "W94MRYDqOZ",roles: [{ role: "readWrite", db: "fuxi"},]})
+      EOF
+      sed -i 's/#security:/security:\n  authorization: "enabled"/g' /etc/mongod.conf
+      sed -i "s/WEB_HOST = '127.0.0.1'/WEB_HOST = '0.0.0.0'/g" $FUXI_HOME/instance/config.py
+      service mongod restart
+      sleep 3
+      python $FUXI_HOME/migration/start.py
+      bash $FUXI_HOME/run.sh start
+      echo 1 > /tmp/done
+  
+runcmd:
+  - [ ifdown, eth0 ]
+  - [ ifup, eth0 ]
+  - [bash, /opt/install.sh]

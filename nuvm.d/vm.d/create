@@ -23,6 +23,16 @@ function create_cloud_init(){
   genisoimage -quiet -output $cloud_init_image -volid cidata -joliet -r $meta_data $user_data
 }
 
+function before_start(){
+  script_before_start="$nuvm_path/cloud-init/$cloud_init/before_start.sh"
+  echo $script_before_start
+  if [[ -e $script_before_start ]];then
+    echo 'Running script on host before vm starts'
+    source $script_before_start
+    init_before_start
+  fi
+}
+
 function create_vm(){
   source "$nuvm_path/nuvm.d/helpers.d/download.sh"
   download "$image_name" "$hostname" "$disk_size"
@@ -39,6 +49,7 @@ function create_vm(){
   VBoxManage storagectl $hostname --name "IDE Controller" --add ide --controller PIIX4
   VBoxManage storageattach $hostname --storagectl "SATA Controller" --port 0 --device 0 --type hdd  --medium $vdi_image
   VBoxManage storageattach $hostname --storagectl "IDE Controller" --port 1 --device 0 --type dvddrive --medium $cloud_init_image
+  before_start
   VBoxManage startvm $hostname --type headless
 } 
 

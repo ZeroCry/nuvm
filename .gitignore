@@ -1,6 +1,7 @@
 cloud-init/*
 !cloud-init/default
 !cloud-init/private-internet-access
+!cloud-init/fuxi-scanner
 vms/*
 images/*
 !vms/.gitkeep

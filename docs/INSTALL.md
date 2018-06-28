@@ -1,7 +1,8 @@
 # Installation
 
 To install nuvm, you first need to install all the dependencies.
-Dependencie | Description
+
+Dependency | Description
 ------------ | -------------
 VirtualBox | Used to virtualizition
 genisoimage | Used to generate the cloud init iso

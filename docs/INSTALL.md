@@ -17,24 +17,26 @@ sudo ln -s -f $(pwd)/nuvm /usr/local/bin/nuvm
 ```
 
 After that you'll be able to call the nuvm program from anywhere.
+
+## Available commands
 ```bash
 [gambler@onion ~]$ nuvm
 disk
-|--resize
+|--resize               Resize disk in Gb
 list
-|--os
-|--images
-|--cloud-init
-|--runningvms
-|--vms
+|--os                   List virtualbox OS's templates
+|--images               List available images 
+|--cloud-init           List available cloud-init scripts
+|--runningvms           List running VM's
+|--vms                  List all your VM's
 portfwd
-|--list
-|--create
-|--delete
+|--list                 List port forwarding of a specifc vm
+|--create               Create a port forwarding for a specfic vm
+|--delete               Delete a port forwarding of a specfic vm
 vm
-|--stop
-|--create
-|--delete
-|--inspect
-|--start
+|--stop                 Stop a VM 
+|--create               Create a VM
+|--delete               Delete a VM
+|--inspect              Inspect a VM
+|--start                Start a VM
 ```

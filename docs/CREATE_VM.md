@@ -5,6 +5,7 @@ nuvm vm create -o Linux_64 -i centos-7 -H system-test -p 2222 -d 15 -c 5 -m 2048
 ```
 
 ## What are all these arguments
+
 It's very simple to create a vm, you just need to decide some configurations, and you do that, using the follow parameters.
 
 Nuvm Option | Name | Description | Required
@@ -33,8 +34,10 @@ nuvm list images
 nuvm list cloud-init
 ```
 
-# Why I need a port forward?
+## Why I need a port forward?
 
 By default the nuvm create vms with a nat interface, so to get access to a service on the vm you need the port forward.
 It's already on project roadmap, add an option to add a bridge interface.
 
+# VM Creation Workflow
+[VM Creation Worflow](images/Create-VM-Workflow.png)

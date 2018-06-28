@@ -40,4 +40,4 @@ By default the nuvm create vms with a nat interface, so to get access to a servi
 It's already on project roadmap, add an option to add a bridge interface.
 
 # VM Creation Workflow
-[VM Creation Worflow](images/Create-VM-Workflow.png)
+![VM Creation Worflow](images/Create-VM-Workflow.png)

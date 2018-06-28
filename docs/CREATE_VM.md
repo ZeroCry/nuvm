@@ -4,7 +4,7 @@
 nuvm vm create -o Linux_64 -i centos-7 -H system-test -p 2222 -d 15 -c 5 -m 2048 -C common
 ```
 
-## What are all these arguments
+## What are all these parameters
 
 It's very simple to create a vm, you just need to decide some configurations, and you do that, using the follow parameters.
 

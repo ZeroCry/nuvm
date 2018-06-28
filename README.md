@@ -1,83 +1,34 @@
 # nuvm
+Virtualbox CLI Manager
 
-Virtualbox cli manager
+# Why nuvm?
+WAIT, I'll explain this ASAP.
 
-# Dependencies
+# Why not use Vagrant?
+Because I don't want to.:stuck_out_tongue:
 
-``` 
-VirtualBox
-genisoimage
-qemu
-axel
-```
+# Documentation
+1. First Step's
+  - [Installation](docs/INSTALL.md)
+  - [Configure Images](docs/CONFIGURE_IMAGES.md)
+  - [Create Cloud Images](docs/CREATE_CLOUD_INIT.md) 
+    - [Before Start Script](docs/BEFORE_START_SCRIPT.md)
 
-# Configure
+2. VM Administration
+  - [Create a VM](docs/CREATE_VM.md)
+  - [Accessing a VM](docs/SSH_ACCESS.md)
 
-```bash
-sudo ln -s -f full/path/nuvm /usr/local/bin
-```
+# Cloud-Init Templates
+If you use this project and have some interesting cloud-init template, make a PR.
+These are the templates so far:
+- [private-internet-access](cloud-init/private-internet-access) - A template to install all necessary to run [PIA](https://www.privateinternetaccess.com/), and start it together with the vm.
+- [fuxi-scanner](cloud-init/fuxi-scanner) - A template to install all necessary to run [Fuxi Scanner](https://github.com/jeffzh3ng/Fuxi-Scanner).
 
-# Commands
-```bash
-$ nuvm
-disk
-|--resize               Resize disk in Gb
-list
-|--os                   List virtualbox OS's templates
-|--images               List images availables
-|--runningvms           List running VM's
-|--vms                  List all your VM's
-portfwd
-|--list                 List port forwarding of a specifc vm
-|--create               Create a port forwarding for a specfic vm
-|--delete               Delete a port forwarding of a specfic vm
-vm
-|--stop                 Stop a VM 
-|--create               Create a VM
-|--delete               Delete a VM
-|--inspect              Inspect a VM
-|--start                Start a VM
-```
-
-# Images
-
-```
-You can add new images editing the file nuvm.d/.config/images.json
-```
-
-# Cloud Init
-
-```
-You can create your cloud-init scripts, based on cloud-init/default.
-Create a folder with the name of your cloud-init, and copy the files:
-user-data
-meta-data
-inside it, the nuvm replaces the string HOSTNAME, so don't change it.
-```
-
-# VM Access
-
-```
-All vms run with nat, so to get access to then, the nuvm create a port forward.
-When you create a vm especifie a port from your host to bind the vm ssh, when the
-vm starts, you can access the vm like this
-```
-```bash
-ssh nuvm@127.0.0.1 -p 2222
-```
-```
-by default nuvm create a user nuvm with password secret, you can change it on your cloud-init script
-```
-
-# Creating a VM
- 
-```bash
-nuvm vm create -o Linux_64 -i centos-7 -H system-test -p 2222 -d 15 -C common
-ssh nuvm@127.0.0.1 -p 2222 -i ~/.ssh/maquinas
-```
-
-# ToDo
-
-~~Image resize~~
-
-Create Port Forwarding to specific vms
+# RoadMap
+- [x] Images Resize 
+- [x] Create Port Forwarding to specific vms
+- [ ] Support to create vms with bridge interface
+- [ ] Support to add bridge interfaces on created vms
+- [ ] Create vm using a custom VDI
+- [ ] Support Virtualbox Encryption
+- [ ] Implement template(like jinja2) on cloud-init, to replace contents on the user-data

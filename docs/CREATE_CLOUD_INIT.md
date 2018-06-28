@@ -46,4 +46,4 @@ ignore_growroot_disabled: false
 ```
 You just need to replace your public ssh key, in the place of SSH_KEY, but it's recommended that you copy this default template, and create your own on top of the default.
 
-[To learn about before start script, click here.]('BEFORE_START_SCRIPT.md')
+[To learn about before start script, click here.](BEFORE_START_SCRIPT.md)

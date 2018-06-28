@@ -12,8 +12,8 @@ In case of you forget the binded ssh port, just run
 ```bash
 $ nuvm portfwd list vm-hostname
 vm-hostname forwarded ports
-Name  Protocol  Guest Port  Host Port
-ssh   tcp       2222        22
+Name  Protocol  Host Port  Guest Port
+ssh   tcp       2222       22
 ```
 
 # CAUTION

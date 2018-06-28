@@ -4,7 +4,7 @@ hostname="$@"
 
 function specifc_vm(){
   echo "$hostname forwarded ports"
-  nuvm vm inspect "$hostname" | grep -i forwarding | cut -d "=" -f 2 | tr -d "\"" | awk -F, '{print $1,$2,$4,$6}' | column --table -N Name,Protocol,"Guest Port","Host Port"
+  nuvm vm inspect "$hostname" | grep -i forwarding | cut -d "=" -f 2 | tr -d "\"" | awk -F, '{print $1,$2,$4,$6}' | column --table -N Name,Protocol,"Host Port","Guest Port"
   echo
 }
 

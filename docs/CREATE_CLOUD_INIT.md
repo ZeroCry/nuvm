@@ -1,3 +1,10 @@
+# Creating cloud-init scripts
+
+First of all, there's an official documentation about cloud-init config files,[cloud-init-doc](http://cloudinit.readthedocs.io/en/latest/).
+
+But to make your life more easier, there is a [default](../cloud-init/default/user-data) cloud-init, where you just need to set your ssh key.
+
+```yaml
 #cloud-config
 
 # Hostname management
@@ -26,6 +33,7 @@ users:
     primary-group: nuvm
     groups: users
     ssh-import-id: nuvm
+    lock-passwd: false
     sudo: ALL=(ALL) NOPASSWD:ALL
     shell: /bin/bash
     ssh_authorized_keys:
@@ -34,4 +42,8 @@ users:
 growpart:
   mode: auto
   devices: ['/']
-  ignore_growroot_disabled: false
+ignore_growroot_disabled: false
+```
+You just need to replace your public ssh key, in the place of SSH_KEY, but it's recommended that you copy this default template, and create your own on top of the default.
+
+[To learn about before start script, click here.]('BEFORE_START_SCRIPT.md')

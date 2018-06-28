@@ -11,7 +11,7 @@ It's very simple to add a new image, just add a new entry on this json file, the
 ```json
 {
   "debian-9": "http://cdimage.debian.org/cdimage/openstack/current-9/debian-9-openstack-amd64.raw",
-  "debian-8": "http://cdimage.debian.org/cdimage/openstack/current-8/debian-8-openstack-amd64.raw"
+  "debian-8": "http://cdimage.debian.org/cdimage/openstack/current-8/debian-8-openstack-amd64.raw",
   "new-image": "http:///images.new-image.com/cdimage/openstack/current/new-image-openstack-amd64.raw"
 } 
 ```

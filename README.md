@@ -31,4 +31,4 @@ These are the templates so far:
 - [ ] Support to add bridge interfaces on created vms
 - [ ] Create vm using a custom VDI
 - [ ] Support Virtualbox Encryption
-- [ ] Implement template(like jinja2) on cloud-init, to replace contents on the user-data
+- [x] Implement template(like jinja2) on cloud-init, to replace contents on the user-data

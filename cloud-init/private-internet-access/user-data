@@ -31,7 +31,7 @@ users:
     sudo: ALL=(ALL) NOPASSWD:ALL
     shell: /bin/bash
     ssh_authorized_keys:
-        - SSH-KEY
+        - $ssh_key
 
 growpart:
   mode: auto
@@ -40,39 +40,11 @@ growpart:
 
 write_files:
 -   path: /opt/pia.sh
+    encoding: b64
     owner: root:root
     permission: '0777'
     content: |
-      #!/bin/bash
-      function set_dns(){
-        echo -e 'nameserver 84.200.69.80\nnameserver 84.200.70.40' > /etc/resolv.conf
-      }
-      function configure_account(){
-        mkdir -p /etc/private-internet-access
-        cat > /etc/private-internet-access/login.conf <<EOF
-      USERNAME
-      PASSWORD
-      EOF
-        chmod 0600 /etc/private-internet-access/login.conf
-        chown root:root /etc/private-internet-access/login.conf
-      }
-
-      function configure_locations(){
-        curl -o /tmp/openvpn.zip https://www.privateinternetaccess.com/openvpn/openvpn.zip
-        unzip -o /tmp/openvpn.zip -d /etc/openvpn/client
-        rm /tmp/openvpn.zip
-      }
-
-      function start_openvpn(){
-        configure_account
-        configure_locations
-        cd /etc/openvpn/client
-        sed -i 's/auth-user-pass/auth-user-pass \/etc\/private-internet-access\/login.conf/g' Brazil.ovpn
-        openvpn Brazil.ovpn &
-      }
-      set_dns
-      start_openvpn
-
+        $install_pia_b64
 runcmd:
   - [ ifdown, eth0 ]
   - [ ifup, eth0 ]

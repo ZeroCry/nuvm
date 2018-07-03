@@ -13,13 +13,19 @@ function usage() {
 }
 
 function create_cloud_init(){
-  mkdir -p "$nuvm_path/vms/$hostname"
-  meta_data="$nuvm_path/vms/$hostname/meta-data"
-  user_data="$nuvm_path/vms/$hostname/user-data"
+  vm_path="$nuvm_path/vms/$hostname"
+  meta_data="$vm_path/meta-data"
+  user_data="$vm_path/user-data"
+  mkdir -p $vm_path
   cp $nuvm_path/cloud-init/$cloud_init/meta-data $meta_data
   cp $nuvm_path/cloud-init/$cloud_init/user-data $user_data
+  cp -r $nuvm_path/cloud-init/$cloud_init/files $vm_path
   sed -i "s/HOSTNAME/$hostname/g" "$meta_data"
   sed -i "s/HOSTNAME/$hostname/g" "$user_data"
+  source "$nuvm_path/nuvm.d/helpers.d/template.sh"
+  clean
+  replace
+  clean
   genisoimage -quiet -output $cloud_init_image -volid cidata -joliet -r $meta_data $user_data
 }
 

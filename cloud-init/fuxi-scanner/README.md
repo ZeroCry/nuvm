@@ -1,6 +1,6 @@
 # Fuxi Scanner
 
-To use this cloud-init, edit the file user-data and change the string SSH-KEY to your public ssh key.
+To use this cloud-init, edit the file files/ssh_key and add your public ssh key.
 
 Example:
 
@@ -14,3 +14,4 @@ http://127.0.0.1:5000
 
 password: whoami
 
+If you want to change de default password's, just edit the file files/fuxi_install_b64

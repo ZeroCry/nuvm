@@ -1,9 +1,31 @@
 # Creating cloud-init scripts
 
-First of all, there's an official documentation about cloud-init config files,[cloud-init-doc](http://cloudinit.readthedocs.io/en/latest/).
+Here's the basic structure for your cloud-init to work.
+```bash
+├── before_start.sh
+├── files
+│   └── ssh_key
+├── meta-data
+└── user-data
+```
+To make your life easier, there is a [default](../cloud-init/default/user-data) cloud-init, where you just need to set your ssh key.
 
-But to make your life more easier, there is a [default](../cloud-init/default/user-data) cloud-init, where you just need to set your ssh key.
+# Template
+Sometimes you need to add bash scripts inside your cloud-init, it could be really annoying to maintain so to make it easier, the nuvm implements a [template schema](../nuvm.d/helpers.d/template.sh)
+Basically, It gets all files inside the files directory and insert them inside the user-data, however there are some rules to use it:
+- Filenames can contain only letter, numbers and underscore.
+- Preferably file with more than one line must be encoded in base64, but nuvm encode it for you, just add b64 at the end of the filename.
 
+## How it works
+After creating the vm, nuvm copy the selected cloud-init template to the vm folder and start making the template replaces. It gets the files inside the directory files, use the filename as env variable, and set the content of the file as the content of the variable, like the example bellow:
+```bash
+# ls files
+ssh_key
+# export ssh_key=$(cat files/ssh_key)
+# envsubst < user-data > /tmp/file
+```
+
+and for this to work correctly, inside the user-data file, you need to put the variable $ssh_key where you want to replace, as the example bellow:
 ```yaml
 #cloud-config
 
@@ -33,17 +55,36 @@ users:
     primary-group: nuvm
     groups: users
     ssh-import-id: nuvm
-    lock-passwd: false
     sudo: ALL=(ALL) NOPASSWD:ALL
     shell: /bin/bash
     ssh_authorized_keys:
-        - SSH_KEY
+        - $ssh_key
 
 growpart:
   mode: auto
   devices: ['/']
-ignore_growroot_disabled: false
+  ignore_growroot_disabled: false
 ```
-You just need to replace your public ssh key, in the place of SSH_KEY, but it's recommended that you copy this default template, and create your own on top of the default.
 
+
+## Inserting scripts inside user-data
+To insert scripts inside the user-data, you have to specify the filename as a variable, and if your script has more than one line, always use base64 encoding.
+```yaml
+write_files:
+-   path: /opt/install.sh
+    encoding: b64           #Setting the base64 encoding
+    owner: root:root
+    permission: '0777'
+    content: |
+      $install_b64
+```
+and inside the files directory create install_b64,
+```bash
+#!/bin/bash
+curl https://teste.com/script.sh | bash
+```
+Done, just create a vm using this cloud-init template.
+
+# More
+There's an official documentation about cloud-init config files,[cloud-init-doc](http://cloudinit.readthedocs.io/en/latest/).
 [To learn about before start script, click here.](BEFORE_START_SCRIPT.md)

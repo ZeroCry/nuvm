@@ -29,7 +29,7 @@ users:
     sudo: ALL=(ALL) NOPASSWD:ALL
     shell: /bin/bash
     ssh_authorized_keys:
-        - SSH_KEY
+        - $ssh_key
 
 growpart:
   mode: auto
